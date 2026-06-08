@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defensor de Plasma</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="main-wrapper">
+        <div id="game-container">
+            <div id="ui">
+                <div class="stat-group" style="align-items: flex-start;">
+                    <div>Score: <span id="score">0</span></div>
+                    <div id="remaining-container" class="sub-text">Faltan: <span id="remaining-enemies">30</span></div>
+                    <div id="boss-ui" style="display:none; color:#ef4444; font-size: 16px; font-weight: bold; margin-top: 5px;">
+                        Jefe HP: <span id="boss-hp">500</span>
+                    </div>
+                </div>
+                
+                <div class="stat-group center-stats">
+                    <div style="color: #38bdf8;">Nivel <span id="level-display">1</span></div>
+                    <div id="l3-tracker" class="sub-text" style="display:none; color: #eab308; margin-top: 5px;">
+                        Ventaja en: <span id="ventaja-counter" style="font-weight: bold; font-size: 16px;">10</span>
+                    </div>
+                </div>
+
+                <div class="stat-group" style="flex-direction: row; gap: 15px; align-items: center;">
+                    <button id="menu-btn" onclick="togglePause()">⏸ Menú</button>
+                    <div>Vidas: <span id="lives">3</span><span style="font-size: 12px; color: #94a3b8;">/5</span></div>
+                </div>
+            </div>
+            
+            <div id="gameOver" class="overlay">
+                </div>
+
+            <div id="pauseMenu" class="overlay">
+                <h2>JUEGO PAUSADO</h2>
+                <span class="action-btn" onclick="togglePause()">Continuar</span>
+                <span class="action-btn" style="margin-top: 15px;" onclick="location.reload()">Reiniciar</span>
+            </div>
+
+            <div id="levelTransition" class="overlay">
+                <h2 id="transition-text" style="color: #22c55e; font-size: 50px; text-shadow: 0 0 15px #22c55e;">NIVEL 2</h2>
+                <div id="countdown-text" style="font-size: 80px; font-weight: bold; margin-top: 20px;">3</div>
+            </div>
+
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+        </div>
+
+        <div id="legend">
+            <h3 class="legend-title">Índice de Ventajas</h3>
+            
+            <div class="legend-item">
+                <div class="legend-icon icon-v1">⚡</div>
+                <div class="legend-text">
+                    <strong>Frenesí (Común)</strong>
+                    <small>Fuego automático y gran velocidad de nave por 5 segundos.</small>
+                </div>
+            </div>
+
+            <div class="legend-item">
+                <div class="legend-icon icon-v3">🛡</div>
+                <div class="legend-text">
+                    <strong>Escudo (Raro)</strong>
+                    <small>Te vuelve invulnerable a cualquier daño durante 6 segundos.</small>
+                </div>
+            </div>
+
+            <div class="legend-item">
+                <div class="legend-icon icon-v2">❤</div>
+                <div class="legend-text">
+                    <strong>Vida Extra (Épica)</strong>
+                    <small>Recuperas vida (Máx 5). Muy rara de obtener en niveles altos.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        Controles: <b>Flechas</b> o <b>A/D</b> para moverte | <b>Espacio</b> para disparar | <b>P</b> para pausar
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
