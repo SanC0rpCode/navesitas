@@ -42,17 +42,17 @@ let isAutoFire = false;
 let spawnCountV1 = 0;
 let spawnCountV3 = 0;
 
-// Entidades principales (¡TAMAÑOS AUMENTADOS!)
-const player = { x: 400, y: 550, width: 60, height: 60, speed: 6 };
+// Entidades principales (Tamaños ajustados)
+const player = { x: 400, y: 550, width: 50, height: 50, speed: 6 }; // 50x50
 const bullets = [];
 const enemies = [];
 const powerUps = []; 
 
-// JEFE DEL NIVEL 4 (¡TAMAÑO AUMENTADO!)
+// JEFE DEL NIVEL 4 (Tamaño ajustado)
 const boss = { 
     active: false, 
     x: 400, y: 130, 
-    radius: 95, // Imagen total de 190x190
+    radius: 98, // Radio 98 (Imagen de 196x196)
     hp: 500, maxHp: 500, 
     speed: 2, dx: 1 
 };
@@ -63,8 +63,25 @@ remainingEl.innerText = targetKills;
 const keys = {};
 window.addEventListener('keydown', e => {
     keys[e.code] = true;
+    
+    // Disparo
     if (e.code === 'Space' && !gameOver && !isPaused && !isTransitioning) shoot();
+    
+    // Pausa
     if (e.code === 'KeyP') togglePause();
+
+    // --- TRUCO DE DESARROLLADOR (TECLA K) ---
+    if (e.code === 'KeyK' && !gameOver && !isPaused && !isTransitioning) {
+        if (currentLevel < 4) {
+            // Fuerzas el progreso simulando que mataste a todos los necesarios
+            enemiesDefeatedInLevel = targetKills;
+            checkLevelProgress();
+        } else if (currentLevel === 4 && boss.active) {
+            // Fuerzas la muerte del jefe quitándole toda la vida
+            boss.hp = 0;
+            // El ciclo de update detectará esto y mostrará la pantalla de victoria
+        }
+    }
 });
 window.addEventListener('keyup', e => { keys[e.code] = false; });
 
@@ -148,15 +165,15 @@ function checkLevelProgress() {
 setInterval(() => {
     if (!gameOver && !isPaused && !isTransitioning) {
         if (currentLevel === 4 && boss.active) {
-            // Balas del jefe (Tamaño aumentado a 50x50)
+            // Balas del jefe
             enemies.push({ x: boss.x - 40, y: boss.y + boss.radius, width: 50, height: 50, speed: 3.2 + Math.random() * 1.7 });
             enemies.push({ x: boss.x + 40, y: boss.y + boss.radius, width: 50, height: 50, speed: 3.2 + Math.random() * 1.7 });
         } else if (currentLevel < 4) {
-            let eSize = 45; // Enemigo normal aumentado
-            if (currentLevel === 3 && Math.random() < 0.3) eSize = 25; // Enemigo pequeño aumentado
+            let eSize = 50; // Enemigos normales de 50x50
+            if (currentLevel === 3 && Math.random() < 0.3) eSize = 40; // Enemigos pequeños de 40x40
 
             enemies.push({
-                x: Math.random() * (canvas.width - 60) + 30, // Ajuste para que no se salgan del borde
+                x: Math.random() * (canvas.width - 60) + 30,
                 y: -50,
                 width: eSize, height: eSize,
                 speed: enemySpeedMin + Math.random() * (enemySpeedMax - enemySpeedMin)
@@ -268,6 +285,13 @@ function update() {
         if (boss.x - boss.radius < 0 || boss.x + boss.radius > canvas.width) {
             boss.dx *= -1;
         }
+        
+        // --- CHECKEO DE MUERTE DEL JEFE (POR TRUCO O DAÑO) ---
+        if (boss.hp <= 0) {
+            boss.active = false;
+            showGameOver("<span style='font-size: 60px; color: #22c55e; text-shadow: 0 0 20px #22c55e;'>Ganaste ver spiderman conmigo</span><br><span style='font-size:24px; color:#fff;'>(pasame capturaa)</span><br><br><span class='action-btn' onclick='location.reload()'>Jugar de nuevo</span>");
+            return;
+        }
     }
 
     for (let i = bullets.length - 1; i >= 0; i--) {
@@ -282,11 +306,6 @@ function update() {
                 document.getElementById('boss-hp').innerText = boss.hp;
                 score += 5; 
                 scoreEl.innerText = score;
-                
-                if (boss.hp <= 0) {
-                    boss.active = false;
-                    showGameOver("<span style='font-size: 60px; color: #22c55e; text-shadow: 0 0 20px #22c55e;'>Ganaste ver spiderman conmigo</span><br><span style='font-size:24px; color:#fff;'>(pasame capturaa)</span><br><br><span class='action-btn' onclick='location.reload()'>Jugar de nuevo</span>");
-                }
                 continue; 
             }
         }
